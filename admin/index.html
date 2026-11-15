@@ -1,1 +1,829 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090d18">
+<title>PMY | Control Center</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#090d18;
+  --panel:#111827;
+  --card:#151f30;
+  --border:#263349;
+  --text:#f1f5ff;
+  --muted:#8794aa;
+  --accent:#818cf8;
+  --blue:#5685ff;
+  --green:#34d399;
+  --red:#fb7185;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cairo',sans-serif;
+  min-height:100vh;
+}
+
+button,input{font-family:inherit}
+button{cursor:pointer}
+
+.layout{
+  display:flex;
+  min-height:100vh;
+}
+
+.sidebar{
+  width:255px;
+  background:#0d1422;
+  border-left:1px solid var(--border);
+  padding:25px 16px;
+  position:fixed;
+  top:0;bottom:0;right:0;
+  z-index:10;
+  transition:.25s;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 8px 28px;
+  border-bottom:1px solid var(--border);
+}
+
+.logo{
+  width:43px;height:43px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#6477ff,#a78bfa);
+  display:grid;
+  place-items:center;
+  font-size:19px;
+  font-weight:800;
+}
+
+.brand h2{font-size:18px;margin:0}
+.brand small{color:var(--muted)}
+
+.menu-title{
+  color:var(--muted);
+  font-size:11px;
+  margin:27px 12px 10px;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:12px;
+  color:#aab6ca;
+  margin:5px 0;
+  border:0;
+  background:transparent;
+  width:100%;
+  text-align:right;
+  font-size:14px;
+}
+
+.nav:hover,.nav.active{
+  background:#202d46;
+  color:white;
+}
+
+.nav.active{
+  border-right:3px solid var(--accent);
+}
+
+.nav-icon{font-size:19px;width:25px;text-align:center}
+
+.sidebar-bottom{
+  position:absolute;
+  bottom:20px;
+  right:16px;left:16px;
+  padding:15px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:13px;
+}
+
+.sidebar-bottom small{color:var(--muted)}
+
+.main{
+  width:calc(100% - 255px);
+  margin-right:255px;
+  padding:25px 30px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:30px;
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.menu-btn{
+  display:none;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:white;
+  border-radius:10px;
+  padding:9px 13px;
+}
+
+.top-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.icon-btn{
+  background:var(--card);
+  border:1px solid var(--border);
+  color:white;
+  padding:10px 13px;
+  border-radius:11px;
+}
+
+.avatar{
+  width:39px;height:39px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#273b62;
+  font-weight:bold;
+}
+
+.welcome h1{
+  font-size:25px;
+  margin:0 0 5px;
+}
+
+.welcome p{color:var(--muted);margin:0;font-size:13px}
+
+.section{display:none}
+.section.active{display:block}
+
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:22px;
+}
+
+.section-heading h2{font-size:21px;margin:0}
+.section-heading p{color:var(--muted);font-size:12px;margin:5px 0}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+  margin-bottom:24px;
+}
+
+.stat{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:19px;
+}
+
+.stat-icon{
+  font-size:22px;
+  margin-bottom:12px;
+}
+
+.stat small{color:var(--muted)}
+.stat h2{font-size:27px;margin:5px 0}
+
+.stat span{
+  color:var(--green);
+  font-size:11px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.panel h3{font-size:16px;margin:0 0 17px}
+
+.project-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.project{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:17px;
+}
+
+.project-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.project-icon{
+  width:43px;height:43px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  background:#283451;
+}
+
+.project h3{margin:0;font-size:14px}
+.project p{color:var(--muted);font-size:11px;margin:5px 0}
+
+.status{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:10px;
+  background:#12352d;
+  color:var(--green);
+  margin:8px 0;
+}
+
+.status.off{
+  background:#40232c;
+  color:var(--red);
+}
+
+.project-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.btn{
+  border:0;
+  padding:9px 13px;
+  border-radius:9px;
+  font-size:11px;
+  color:white;
+  background:#34435e;
+}
+
+.btn.primary{background:#586eea}
+.btn:hover{filter:brightness(1.15)}
+
+.table-wrap{overflow-x:auto}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:400px;
+}
+
+td,th{
+  padding:13px 10px;
+  text-align:right;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+
+th{color:var(--muted);font-weight:500}
+
+.search{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  color:white;
+  outline:none;
+  margin-bottom:15px;
+}
+
+.search:focus{border-color:var(--accent)}
+
+.setting{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
+  gap:12px;
+}
+
+.setting small{color:var(--muted);display:block}
+
+.switch{
+  width:42px;height:23px;
+  background:#35445e;
+  border-radius:20px;
+  position:relative;
+  border:0;
+}
+
+.switch:after{
+  content:"";
+  position:absolute;
+  width:17px;height:17px;
+  border-radius:50%;
+  background:white;
+  top:3px;right:3px;
+  transition:.2s;
+}
+
+.switch.on{background:#586eea}
+.switch.on:after{right:22px}
+
+.notice{
+  padding:13px;
+  background:#202b43;
+  border-radius:11px;
+  color:#b9c8e7;
+  font-size:12px;
+  line-height:1.9;
+}
+
+footer{
+  color:var(--muted);
+  text-align:center;
+  font-size:11px;
+  padding:25px 0;
+}
+
+#toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#273958;
+  color:white;
+  padding:12px 20px;
+  border-radius:12px;
+  font-size:12px;
+  display:none;
+  z-index:30;
+}
+
+@media(max-width:1000px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:650px){
+  .sidebar{transform:translateX(110%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{
+    width:100%;
+    margin:0;
+    padding:17px 14px;
+  }
+  .menu-btn{display:block}
+  .welcome h1{font-size:20px}
+  .topbar{margin-bottom:23px}
+  .grid{gap:9px}
+  .stat{padding:13px}
+  .stat h2{font-size:22px}
+  .project-grid{grid-template-columns:1fr}
+  .panel{padding:14px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <h2>Mohammed's Lab</h2>
+      <small>Control Center</small>
+    </div>
+  </div>
+
+  <div class="menu-title" data-ar="القائمة الرئيسية" data-en="MAIN MENU">القائمة الرئيسية</div>
+
+  <button class="nav active" onclick="showPage('overview',this)">
+    <span class="nav-icon">▦</span><span data-ar="الرئيسية" data-en="Overview">الرئيسية</span>
+  </button>
+
+  <button class="nav" onclick="showPage('projects',this)">
+    <span class="nav-icon">◈</span><span data-ar="المشاريع" data-en="Projects">المشاريع</span>
+  </button>
+
+  <button class="nav" onclick="showPage('games',this)">
+    <span class="nav-icon">🎮</span><span data-ar="الألعاب" data-en="Games">الألعاب</span>
+  </button>
+
+  <div class="menu-title" data-ar="الإدارة" data-en="MANAGEMENT">الإدارة</div>
+
+  <button class="nav" onclick="showPage('activity',this)">
+    <span class="nav-icon">◷</span><span data-ar="النشاط" data-en="Activity">النشاط</span>
+  </button>
+
+  <button class="nav" onclick="showPage('settings',this)">
+    <span class="nav-icon">⚙</span><span data-ar="الإعدادات" data-en="Settings">الإعدادات</span>
+  </button>
+
+  <div class="sidebar-bottom">
+    <strong>PMY LAB</strong><br>
+    <small>Personal Project • 2026</small>
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+  <div class="top-left">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="welcome">
+      <h1 data-ar="مركز التحكم 👋" data-en="Control Center 👋">مركز التحكم 👋</h1>
+      <p data-ar="أهلاً بك في مختبر محمد البرمجي" data-en="Welcome to Mohammed's Lab">أهلاً بك في مختبر محمد البرمجي</p>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <button class="icon-btn" onclick="changeLanguage()" id="langBtn">EN</button>
+    <div class="avatar">M</div>
+  </div>
+
+</header>
+
+<!-- OVERVIEW -->
+
+<section class="section active" id="overview">
+
+  <div class="section-heading">
+    <div>
+      <h2 data-ar="نظرة عامة" data-en="Overview">نظرة عامة</h2>
+      <p data-ar="ملخص مختبرك البرمجي" data-en="Your laboratory summary">ملخص مختبرك البرمجي</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="stat">
+      <div class="stat-icon">💻</div>
+      <small data-ar="إجمالي المشاريع" data-en="Total Projects">إجمالي المشاريع</small>
+      <h2>3</h2>
+      <span>● PMY Lab</span>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">🎮</div>
+      <small data-ar="الألعاب" data-en="Games">الألعاب</small>
+      <h2>1</h2>
+      <span>● Games</span>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">🌐</div>
+      <small data-ar="حالة الموقع" data-en="Website Status">حالة الموقع</small>
+      <h2 style="font-size:20px" data-ar="متاح" data-en="Online">متاح</h2>
+      <span>● GitHub Pages</span>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">🚀</div>
+      <small data-ar="الإصدار" data-en="Version">الإصدار</small>
+      <h2>1.0</h2>
+      <span>● PMY</span>
+    </div>
+
+  </div>
+
+  <div class="panel">
+    <h3 data-ar="مشاريع المختبر" data-en="Laboratory Projects">مشاريع المختبر</h3>
+    <div class="project-grid" id="overviewProjects"></div>
+  </div>
+
+  <div class="panel">
+    <h3 data-ar="معلومات النظام" data-en="System Information">معلومات النظام</h3>
+    <div class="notice">
+      Mohammed's Lab<br>
+      Website: PMY<br>
+      Hosting: GitHub Pages<br>
+      Dashboard: Control Center<br>
+      <span data-ar="حالة الاتصال البرمجي: لم يتم الربط بعد" data-en="Backend connection: Not connected yet">حالة الاتصال البرمجي: لم يتم الربط بعد</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- PROJECTS -->
+
+<section class="section" id="projects">
+
+  <div class="section-heading">
+    <div>
+      <h2 data-ar="إدارة المشاريع" data-en="Project Management">إدارة المشاريع</h2>
+      <p data-ar="جميع أدواتك البرمجية في مكان واحد" data-en="Manage your applications">جميع أدواتك البرمجية في مكان واحد</p>
+    </div>
+  </div>
+
+  <input class="search" id="projectSearch" placeholder="ابحث عن مشروع..." oninput="renderProjects()">
+
+  <div class="project-grid" id="allProjects"></div>
+
+</section>
+
+<!-- GAMES -->
+
+<section class="section" id="games">
+
+  <div class="section-heading">
+    <div>
+      <h2 data-ar="منطقة الألعاب" data-en="Games Center">منطقة الألعاب</h2>
+      <p data-ar="إدارة ألعاب المختبر" data-en="Manage your games">إدارة ألعاب المختبر</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="project">
+      <div class="project-top">
+        <div class="project-icon">🎯</div>
+        <div>
+          <h3 data-ar="لعبة التحدي" data-en="Challenge Game">لعبة التحدي</h3>
+          <p data-ar="لعبة تفاعلية داخل المختبر" data-en="Interactive laboratory game">لعبة تفاعلية داخل المختبر</p>
+        </div>
+      </div>
+      <span class="status off" data-ar="بانتظار الربط" data-en="Awaiting integration">بانتظار الربط</span>
+      <p data-ar="سيتم ربط اللعبة والتحكم بها بعد تحديد ملفها الحقيقي." data-en="Game integration will be added after identifying its actual file.">سيتم ربط اللعبة والتحكم بها بعد تحديد ملفها الحقيقي.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ACTIVITY -->
+
+<section class="section" id="activity">
+
+  <div class="section-heading">
+    <div>
+      <h2 data-ar="النشاط" data-en="Activity">النشاط</h2>
+      <p data-ar="معلومات لوحة التحكم الحالية" data-en="Current dashboard information">معلومات لوحة التحكم الحالية</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 data-ar="سجل الواجهة" data-en="Interface Log">سجل الواجهة</h3>
+    <div class="notice" id="activityLog">
+      تم تجهيز واجهة التحكم الأولية.<br>
+      لم يتم ربط GitHub API بعد.
+    </div>
+  </div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section class="section" id="settings">
+
+  <div class="section-heading">
+    <div>
+      <h2 data-ar="الإعدادات" data-en="Settings">الإعدادات</h2>
+      <p data-ar="خصص تجربة لوحة التحكم" data-en="Customize your dashboard">خصص تجربة لوحة التحكم</p>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <div class="setting">
+      <div>
+        <strong data-ar="لغة الواجهة" data-en="Interface Language">لغة الواجهة</strong>
+        <small data-ar="التبديل بين العربية والإنجليزية" data-en="Arabic and English">التبديل بين العربية والإنجليزية</small>
+      </div>
+      <button class="btn primary" onclick="changeLanguage()">AR / EN</button>
+    </div>
+
+    <div class="setting">
+      <div>
+        <strong data-ar="المظهر الداكن" data-en="Dark Theme">المظهر الداكن</strong>
+        <small data-ar="تفعيل الواجهة الداكنة" data-en="Dark interface">تفعيل الواجهة الداكنة</small>
+      </div>
+      <span class="status">ON</span>
+    </div>
+
+    <div class="setting">
+      <div>
+        <strong data-ar="الاتصال بالخادم" data-en="Server Connection">الاتصال بالخادم</strong>
+        <small data-ar="لم يتم ربط Cloudflare Worker" data-en="Cloudflare Worker not connected">لم يتم ربط Cloudflare Worker</small>
+      </div>
+      <span class="status off">OFF</span>
+    </div>
+
+    <div class="setting">
+      <div>
+        <strong>GitHub API</strong>
+        <small data-ar="بانتظار إعداد الاتصال الآمن" data-en="Awaiting secure integration">بانتظار إعداد الاتصال الآمن</small>
+      </div>
+      <span class="status off">OFF</span>
+    </div>
+
+  </div>
+
+  <div class="notice">
+    <strong>Security Notice</strong><br>
+    لا تضع GitHub Token داخل ملفات الواجهة العامة.
+    سيتم إعداد تسجيل الدخول والاتصال الآمن في المرحلة القادمة.
+  </div>
+
+</section>
+
+<footer>
+  Mohammed's Lab © 2026 — Built with passion ❤️
+</footer>
+
+</main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+let english = false;
+
+const projects = [
+  {
+    id:1,
+    icon:"🧮",
+    ar:"الآلة الحاسبة",
+    en:"Calculator",
+    descAr:"آلة حاسبة لتنفيذ العمليات الحسابية",
+    descEn:"A simple calculation tool",
+    status:true
+  },
+  {
+    id:2,
+    icon:"▶️",
+    ar:"مولّد أسماء يوتيوب",
+    en:"YouTube Name Generator",
+    descAr:"إنشاء أفكار لأسماء قنوات يوتيوب",
+    descEn:"Generate YouTube channel names",
+    status:true
+  },
+  {
+    id:3,
+    icon:"🎨",
+    ar:"حاسبة تكلفة الطلاء",
+    en:"Paint Cost Calculator",
+    descAr:"حساب تكلفة طلاء الغرف",
+    descEn:"Calculate room painting costs",
+    status:true
+  }
+];
+
+function showPage(id,button){
+
+  document.querySelectorAll('.section').forEach(s=>{
+    s.classList.remove('active');
+  });
+
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.nav').forEach(n=>{
+    n.classList.remove('active');
+  });
+
+  if(button) button.classList.add('active');
+
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function changeLanguage(){
+
+  english = !english;
+
+  document.documentElement.lang = english ? "en" : "ar";
+  document.documentElement.dir = english ? "ltr" : "rtl";
+
+  document.querySelectorAll('[data-ar]').forEach(el=>{
+    el.textContent = english ? el.dataset.en : el.dataset.ar;
+  });
+
+  document.getElementById('langBtn').textContent = english ? "AR" : "EN";
+
+  document.getElementById('projectSearch').placeholder =
+    english ? "Search projects..." : "ابحث عن مشروع...";
+
+  renderProjects();
+  renderOverview();
+}
+
+function projectCard(p){
+
+  return `
+  <div class="project">
+    <div class="project-top">
+      <div class="project-icon">${p.icon}</div>
+      <div>
+        <h3>${english?p.en:p.ar}</h3>
+        <p>${english?p.descEn:p.descAr}</p>
+      </div>
+    </div>
+
+    <span class="status ${p.status?'':'off'}">
+      ${p.status?(english?'Active':'نشط'):(english?'Disabled':'متوقف')}
+    </span>
+
+    <div class="project-actions">
+      <button class="btn primary" onclick="projectInfo(${p.id})">
+        ${english?'Manage':'إدارة'}
+      </button>
+
+      <button class="btn" onclick="toggleProject(${p.id})">
+        ${p.status?(english?'Disable':'إيقاف'):(english?'Enable':'تشغيل')}
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderProjects(){
+
+  let query=document.getElementById('projectSearch').value.toLowerCase();
+
+  document.getElementById('allProjects').innerHTML =
+    projects.filter(p=>
+      (p.ar+" "+p.en).toLowerCase().includes(query)
+    ).map(projectCard).join('');
+}
+
+function renderOverview(){
+
+  document.getElementById('overviewProjects').innerHTML =
+    projects.map(projectCard).join('');
+}
+
+function toggleProject(id){
+
+  const p=projects.find(x=>x.id===id);
+  p.status=!p.status;
+
+  renderProjects();
+  renderOverview();
+
+  log(english?'Project interface status changed':'تم تغيير حالة المشروع في الواجهة');
+  toast(english?'Interface updated':'تم تحديث العرض');
+}
+
+function projectInfo(id){
+
+  const p=projects.find(x=>x.id===id);
+
+  toast((english?'Selected: ':'المشروع المحدد: ')+(english?p.en:p.ar));
+}
+
+function log(message){
+
+  document.getElementById('activityLog').innerHTML =
+    message+"<br>"+document.getElementById('activityLog').innerHTML;
+}
+
+function toast(message){
+
+  const t=document.getElementById('toast');
+  t.textContent=message;
+  t.style.display='block';
+
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>{
+    t.style.display='none';
+  },2500);
+}
+
+renderProjects();
+renderOverview();
+
+</script>
+
+</body>
+</html>
+

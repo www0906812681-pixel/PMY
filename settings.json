@@ -2,7 +2,7 @@
   "globalEnabled": true,
   "projects": {
     "calc": false,
-    "names": true,
+    "names": false,
     "paint": true,
     "games": false
   }

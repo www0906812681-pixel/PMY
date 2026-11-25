@@ -70,6 +70,9 @@ h1{font-size:clamp(42px,6vw,68px);line-height:1.08;letter-spacing:-2px;margin:22
 h2{font-size:clamp(27px,4vw,38px);margin:7px 0}
 .section-head p{color:var(--muted);margin:0}
 .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.projects.loading{visibility:hidden}
+.project[hidden],.all-off[hidden]{display:none}
+.all-off{text-align:center;color:var(--muted);padding:30px 10px;font-size:16px}
 .project{background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--panel2) 70%,var(--panel)));border:1px solid var(--line);border-radius:var(--radius);padding:25px;min-height:220px;display:flex;flex-direction:column;transition:.25s;box-shadow:0 8px 30px #0000000b}
 .project:hover{transform:translateY(-5px);border-color:#a879ff77}
 .project-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
@@ -180,28 +183,29 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 <section class="section" id="projects">
  <div class="wrap">
   <div class="section-head"><span class="kicker" data-i18n="featured">مختارة بعناية</span><h2 data-i18n="projectTitle">مشاريعي المميزة</h2><p data-i18n="projectSub">أدوات بسيطة، أفكار عملية، وتجارب قابلة للاستخدام.</p></div>
-  <div class="projects">
-   <article class="project">
+  <div class="projects loading" id="projectsGrid">
+   <article class="project" data-project="calc">
     <div class="project-top"><span class="project-icon">＋</span><span class="status" data-i18n="ready">متاح للتجربة</span></div>
     <h3 data-i18n="calcTitle">آلة حاسبة</h3><p data-i18n="calcDesc">آلة حاسبة بسيطة للعمليات الحسابية اليومية بواجهة سهلة.</p>
     <button class="btn secondary" data-open="calc" data-i18n="try">جرّب المشروع ←</button>
    </article>
-   <article class="project">
+   <article class="project" data-project="names">
     <div class="project-top"><span class="project-icon">✦</span><span class="status" data-i18n="ready">متاح للتجربة</span></div>
     <h3 data-i18n="nameTitle">مولّد أسماء قنوات يوتيوب</h3><p data-i18n="nameDesc">اكتب مجال قناتك أو كلمة تعبّر عنها واحصل على أفكار أسماء جديدة.</p>
     <button class="btn secondary" data-open="names" data-i18n="try">جرّب المشروع ←</button>
    </article>
-   <article class="project">
+   <article class="project" data-project="paint">
     <div class="project-top"><span class="project-icon">▦</span><span class="status" data-i18n="ready">متاح للتجربة</span></div>
     <h3 data-i18n="paintTitle">حاسبة تكلفة طلاء الغرف</h3><p data-i18n="paintDesc">احسب مساحة الأرضية والتكلفة التقديرية بناءً على أبعاد الغرفة وسعر المتر.</p>
     <button class="btn secondary" data-open="paint" data-i18n="try">جرّب المشروع ←</button>
    </article>
-   <article class="project disabled">
+   <article class="project disabled" data-project="games">
     <div class="project-top"><span class="project-icon">🎮</span><span class="status pending" data-i18n="soon">قيد التجهيز</span></div>
     <h3 data-i18n="gamesTitle">منطقة الألعاب</h3><p data-i18n="gamesDesc">مساحة لألعاب وتحديات تفاعلية ستضاف قريباً إلى المختبر.</p>
     <button class="btn secondary" disabled data-i18n="coming">قريباً</button>
    </article>
   </div>
+  <p class="all-off" id="allOff" hidden data-i18n="allOff">المشاريع غير متاحة حالياً.</p>
  </div>
 </section>
 
@@ -233,6 +237,7 @@ const translations={
   nameTitle:"مولّد أسماء قنوات يوتيوب",nameDesc:"اكتب مجال قناتك أو كلمة تعبّر عنها واحصل على أفكار أسماء جديدة.",
   paintTitle:"حاسبة تكلفة طلاء الغرف",paintDesc:"احسب مساحة الأرضية والتكلفة التقديرية بناءً على أبعاد الغرفة وسعر المتر.",
   soon:"قيد التجهيز",gamesTitle:"منطقة الألعاب",gamesDesc:"مساحة لألعاب وتحديات تفاعلية ستضاف قريباً إلى المختبر.",coming:"قريباً",
+  allOff:"المشاريع غير متاحة حالياً.",
   aboutKicker:"الفكرة وراء المختبر",aboutTitle:"التعلّم بالتجربة",aboutText:"Mohammed’s Lab مساحة شخصية لتوثيق رحلة التعلّم في البرمجة، وتجربة الأفكار، وبناء أدوات صغيرة مفيدة. كل مشروع هنا خطوة جديدة نحو فكرة أكبر.",
   quote:"«الاستمرارية تصنع النجاح»",footer:"جميع الحقوق محفوظة © 2026 Mohammed’s Lab",
   mCalc:"الآلة الحاسبة",mNames:"مولّد أسماء القنوات",mPaint:"حاسبة تكلفة الطلاء",
@@ -251,6 +256,7 @@ const translations={
   nameTitle:"YouTube Name Generator",nameDesc:"Enter your channel topic or a keyword and get fresh name ideas.",
   paintTitle:"Room Painting Cost Calculator",paintDesc:"Estimate floor area and cost using room dimensions and the price per square metre.",
   soon:"In progress",gamesTitle:"Game Zone",gamesDesc:"A space for interactive games and challenges coming soon.",coming:"Coming soon",
+  allOff:"Projects are currently unavailable.",
   aboutKicker:"THE IDEA",aboutTitle:"Learning by building",aboutText:"Mohammed’s Lab is a personal space to document a coding journey, experiment with ideas, and build useful small tools. Every project is another step toward a bigger idea.",
   quote:"“Consistency creates success”",footer:"All rights reserved © 2026 Mohammed’s Lab",
   mCalc:"Calculator",mNames:"YouTube Name Generator",mPaint:"Painting Cost Calculator",
@@ -352,7 +358,31 @@ function calculatePaint(){
  const unit=currency==="SDG"?t("sdg"):t("usd");
  $("paintResult").innerHTML=`${t("area")}: <strong>${formatter.format(area)} m²</strong><br>${t("total")}: <strong>${formatter.format(total)} ${unit}</strong>`;
 }
+
+/* ===== التحكم في ظهور المشاريع من settings.json ===== */
+async function loadSettings(){
+ const grid=$("projectsGrid");
+ try{
+  const r=await fetch("settings.json?t="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw new Error("settings not found");
+  const s=await r.json();
+  const globalOn=s.globalEnabled!==false;
+  const projects=s.projects||{};
+  let visible=0;
+  document.querySelectorAll(".project[data-project]").forEach(card=>{
+   const on=globalOn&&projects[card.dataset.project]===true;
+   card.hidden=!on;
+   if(on)visible++;
+  });
+  $("allOff").hidden=visible>0;
+ }catch(e){
+  /* لو فشل التحميل نترك كل المشاريع ظاهرة كما هي */
+ }
+ grid.classList.remove("loading");
+}
+
 applyLanguage();
+loadSettings();
 </script>
 </body>
-</html>
+  </html>

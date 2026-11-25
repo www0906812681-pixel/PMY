@@ -4,6 +4,6 @@
     "calc": true,
     "names": true,
     "paint": true,
-    "games": true
+    "games": false
   }
 }

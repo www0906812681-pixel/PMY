@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>لوحة التحكم - Mohammed's Lab</title>
+<style>
+  :root { --bg:#0f1420; --card:#1a2133; --text:#e8ecf5; --muted:#8a94ab; --ok:#2ea043; --off:#555d70; --accent:#4c8dff; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); padding:16px; }
+  .wrap { max-width:520px; margin:0 auto; }
+  h1 { font-size:20px; margin:8px 0 16px; }
+  .card { background:var(--card); border-radius:14px; padding:16px; margin-bottom:14px; }
+  label { display:block; margin-bottom:6px; color:var(--muted); font-size:14px; }
+  input[type=password] { width:100%; padding:12px; border-radius:10px; border:1px solid #2c3550; background:#0f1420; color:var(--text); font-size:16px; }
+  button { width:100%; padding:13px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:16px; cursor:pointer; margin-top:10px; }
+  button.secondary { background:#2c3550; }
+  button:disabled { opacity:.5; }
+  .row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #263049; }
+  .row:last-child { border-bottom:0; }
+  .name { font-size:16px; }
+  .sw { position:relative; width:52px; height:30px; background:var(--off); border-radius:30px; cursor:pointer; transition:.2s; flex-shrink:0; }
+  .sw::after { content:""; position:absolute; top:3px; right:3px; width:24px; height:24px; background:#fff; border-radius:50%; transition:.2s; }
+  .sw.on { background:var(--ok); }
+  .sw.on::after { right:25px; }
+  #msg { text-align:center; min-height:24px; font-size:14px; margin-top:8px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚙️ لوحة تحكم Mohammed's Lab</h1>
+
+  <div class="card" id="loginCard">
+    <label for="tok">توكن GitHub</label>
+    <input type="password" id="tok" placeholder="github_pat_...">
+    <button id="loginBtn">دخول</button>
+  </div>
+
+  <div class="card hidden" id="panel">
+    <div class="row">
+      <span class="name"><b>تفعيل الموقع (عام)</b></span>
+      <div class="sw" id="sw_global"></div>
+    </div>
+    <div class="row"><span class="name">🧮 الآلة الحاسبة</span><div class="sw" id="sw_calc"></div></div>
+    <div class="row"><span class="name">🎬 مولد الأسماء</span><div class="sw" id="sw_names"></div></div>
+    <div class="row"><span class="name">🎨 حاسبة الطلاء</span><div class="sw" id="sw_paint"></div></div>
+    <div class="row"><span class="name">🎮 الألعاب</span><div class="sw" id="sw_games"></div></div>
+    <button id="saveBtn">حفظ التغييرات</button>
+    <button class="secondary" id="logoutBtn">تسجيل الخروج</button>
+  </div>
+
+  <div id="msg"></div>
+</div>
+
+<script>
+const OWNER = "www0906812681-pixel";
+const REPO = "PMY";
+const FILE = "settings.json";
+const API = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + FILE;
+
+let token = "";
+let sha = "";
+let settings = { globalEnabled: true, projects: { calc:true, names:true, paint:true, games:false } };
+
+const $ = (id) => document.getElementById(id);
+const msg = (t, ok) => { $("msg").textContent = t; $("msg").style.color = ok ? "#2ea043" : "#ff6b6b"; };
+
+function headers() {
+  return { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
+}
+
+function render() {
+  $("sw_global").classList.toggle("on", settings.globalEnabled);
+  ["calc","names","paint","games"].forEach(function(k) {
+    $("sw_" + k).classList.toggle("on", !!settings.projects[k]);
+  });
+}
+
+function decode(b64) {
+  const bin = atob(b64.replace(/\n/g, ""));
+  const bytes = Uint8Array.from(bin, function(c) { return c.charCodeAt(0); });
+  return new TextDecoder().decode(bytes);
+}
+
+function encode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach(function(b) { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+async function load() {
+  const r = await fetch(API + "?t=" + Date.now(), { headers: headers() });
+  if (r.status === 401) throw new Error("التوكن غير صحيح");
+  if (!r.ok) throw new Error("فشل التحميل (" + r.status + ")");
+  const data = await r.json();
+  sha = data.sha;
+  const parsed = JSON.parse(decode(data.content));
+  settings.globalEnabled = parsed.globalEnabled !== false;
+  ["calc","names","paint","games"].forEach(function(k) {
+    if (parsed.projects && typeof parsed.projects[k] === "boolean") settings.projects[k] = parsed.projects[k];
+  });
+  render();
+}
+
+async function login() {
+  token = $("tok").value.trim();
+  if (!token) { msg("اكتب التوكن", false); return; }
+  $("loginBtn").disabled = true;
+  msg("جاري الدخول...", true);
+  try {
+    await load();
+    try { localStorage.setItem("lab_token", token); } catch (e) {}
+    $("loginCard").classList.add("hidden");
+    $("panel").classList.remove("hidden");
+    msg("تم الدخول ✅", true);
+  } catch (e) {
+    msg(e.message, false);
+  }
+  $("loginBtn").disabled = false;
+}
+
+async function save() {
+  $("saveBtn").disabled = true;
+  msg("جاري الحفظ...", true);
+  try {
+    const body = {
+      message: "Update settings from admin panel",
+      content: encode(JSON.stringify(settings, null, 2) + "\n"),
+      sha: sha
+    };
+    const r = await fetch(API, { method: "PUT", headers: headers(), body: JSON.stringify(body) });
+    if (!r.ok) throw new Error("فشل الحفظ (" + r.status + ")");
+    const data = await r.json();
+    sha = data.content.sha;
+    msg("تم الحفظ ✅ (قد يستغرق الموقع دقيقة ليتحدث)", true);
+  } catch (e) {
+    msg(e.message, false);
+  }
+  $("saveBtn").disabled = false;
+}
+
+function logout() {
+  try { localStorage.removeItem("lab_token"); } catch (e) {}
+  token = "";
+  $("tok").value = "";
+  $("panel").classList.add("hidden");
+  $("loginCard").classList.remove("hidden");
+  msg("", true);
+}
+
+$("sw_global").onclick = function() { settings.globalEnabled = !settings.globalEnabled; render(); };
+["calc","names","paint","games"].forEach(function(k) {
+  $("sw_" + k).onclick = function() { settings.projects[k] = !settings.projects[k]; render(); };
+});
+$("loginBtn").onclick = login;
+$("saveBtn").onclick = save;
+$("logoutBtn").onclick = logout;
+
+try {
+  const saved = localStorage.getItem("lab_token");
+  if (saved) { $("tok").value = saved; login(); }
+} catch (e) {}
+</script>
+</body>
+</html>

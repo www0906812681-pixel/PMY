@@ -1,9 +1,9 @@
 {
   "globalEnabled": true,
   "projects": {
-    "calc": false,
+    "calc": true,
     "names": true,
-    "paint": false,
+    "paint": true,
     "games": false
   }
 }

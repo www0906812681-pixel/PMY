@@ -363,7 +363,7 @@ function calculatePaint(){
 async function loadSettings(){
  const grid=$("projectsGrid");
  try{
-  const r=await fetch("settings.json?t="+Date.now(),{cache:"no-store"});
+  const r=await fetch("https://api.github.com/repos/www0906812681-pixel/PMY/contents/settings.json?t="+Date.now(),{headers:{"Accept":"application/vnd.github.raw+json"},cache:"no-store"});
   if(!r.ok)throw new Error("settings not found");
   const s=await r.json();
   const globalOn=s.globalEnabled!==false;
@@ -385,4 +385,4 @@ applyLanguage();
 loadSettings();
 </script>
 </body>
-  </html>
+</html>

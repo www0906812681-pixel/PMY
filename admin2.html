@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0c13">
+<title>لوحة التحكم - Mohammed's Lab</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">ML</div>
+      <div><b>Mohammed's Lab</b><small>لوحة التحكم</small></div>
+    </div>
+  </div>
+
+  <div class="card" id="loginCard">
+    <h3>تسجيل الدخول</h3>
+    <label for="tok">توكن GitHub</label>
+    <input type="password" id="tok" placeholder="github_pat_...">
+    <button class="btn-gold btn-full" id="loginBtn">دخول</button>
+  </div>
+
+  <div id="panel" class="hidden">
+
+    <div class="hero">
+      <div>
+        <h2><span id="greet">مرحباً</span>، محمد</h2>
+        <p>تحكم كامل في موقعك بكل سهولة</p>
+      </div>
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2a2f4a"/><stop offset="1" stop-color="#14172a"/>
+          </linearGradient>
+          <linearGradient id="gd" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f1d9a0"/><stop offset="1" stop-color="#d4af6a"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="80" cy="108" rx="62" ry="7" fill="#000" opacity=".35"/>
+        <rect x="26" y="12" width="108" height="72" rx="8" fill="#2b2f3f" stroke="url(#gd)" stroke-width="2.5"/>
+        <rect x="32" y="18" width="96" height="60" rx="4" fill="url(#scr)"/>
+        <rect x="40" y="27" width="34" height="5" rx="2.5" fill="#d4af6a"/>
+        <rect x="40" y="38" width="52" height="4" rx="2" fill="#2fbf8f"/>
+        <rect x="40" y="47" width="42" height="4" rx="2" fill="#7b8199"/>
+        <rect x="40" y="56" width="60" height="4" rx="2" fill="#7b8199"/>
+        <rect x="40" y="65" width="26" height="4" rx="2" fill="#d4af6a" opacity=".7"/>
+        <path d="M14 92 H146 L138 100 Q137 103 133 103 H27 Q23 103 22 100 Z" fill="url(#gd)"/>
+        <rect x="64" y="92" width="32" height="4" rx="2" fill="#a88a4e"/>
+      </svg>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="val" id="stState">—</div><div class="lbl">حالة الموقع</div></div>
+      <div class="stat"><div class="val" id="stCount">—</div><div class="lbl">المشاريع الظاهرة</div></div>
+      <div class="stat"><div class="val" id="stDate" style="font-size:16px">—</div><div class="lbl">آخر تحديث</div></div>
+      <div class="stat"><div class="val" style="font-size:16px;color:var(--muted)">قريباً</div><div class="lbl">عدد الزوار</div></div>
+    </div>
+
+    <div class="card">
+      <h3>إعدادات الموقع</h3>
+      <div class="row"><span class="name">تفعيل الموقع (عام)</span><div class="sw" id="sw_global"></div></div>
+      <div class="row"><span class="name">🧮 الآلة الحاسبة</span><div class="sw" id="sw_calc"></div></div>
+      <div class="row"><span class="name">🎬 مولد الأسماء</span><div class="sw" id="sw_names"></div></div>
+      <div class="row"><span class="name">🎨 حاسبة الطلاء</span><div class="sw" id="sw_paint"></div></div>
+      <div class="row"><span class="name">🎮 الألعاب</span><div class="sw" id="sw_games"></div></div>
+      <div class="btns">
+        <button class="btn-gold" id="saveBtn">حفظ التغييرات</button>
+        <button class="btn-dark" id="logoutBtn">تسجيل الخروج</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="msg"></div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

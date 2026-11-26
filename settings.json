@@ -1,5 +1,5 @@
 {
-  "globalEnabled": true,
+  "globalEnabled": false,
   "projects": {
     "calc": true,
     "names": true,
